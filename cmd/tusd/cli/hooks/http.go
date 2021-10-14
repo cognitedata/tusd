@@ -2,6 +2,7 @@ package hooks
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -30,6 +31,7 @@ func (h HttpHook) InvokeHook(typ HookType, info handler.HookEvent, captureOutput
 		return nil, 0, err
 	}
 
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	req, err := http.NewRequest("POST", h.Endpoint, bytes.NewBuffer(jsonInfo))
 	if err != nil {
 		return nil, 0, err
